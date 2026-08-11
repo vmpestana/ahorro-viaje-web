@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahorro para el viaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ocean-deep:   #0d3b3e;
+    --ocean:        #12595c;
+    --turquoise:    #2ec4b6;
+    --sand:         #f3e7d1;
+    --sand-light:   #faf4e6;
+    --gold:         #d3a04c;
+    --coral:        #f4645b;
+    --ink:          #0d2b2c;
+    --radius: 18px;
+    --shadow: 0 10px 30px rgba(13,59,62,0.15);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background: var(--sand-light);
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(46,196,182,0.10), transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(212,160,76,0.12), transparent 35%);
+    font-family:'Work Sans', sans-serif;
+    color: var(--ink);
+    padding: 32px 16px 80px;
+  }
+  .wrap{ max-width: 920px; margin: 0 auto; }
+
+  /* HERO / JAR */
+  .hero{
+    background: linear-gradient(180deg, var(--ocean-deep), var(--ocean));
+    border-radius: 28px;
+    padding: 36px 32px 30px;
+    color: var(--sand-light);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-top{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--turquoise);
+    margin: 0 0 6px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .status-dot{
+    width:8px; height:8px; border-radius:50%;
+    background:#e0554c; display:inline-block;
+    box-shadow: 0 0 0 3px rgba(224,85,76,0.25);
+  }
+  .status-dot.ok{ background:#2ec4b6; box-shadow: 0 0 0 3px rgba(46,196,182,0.25); }
+  #goalName{
+    font-family:'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(26px, 4vw, 40px);
+    background: rgba(255,255,255,0.05);
+    border: 1px dashed rgba(243,231,209,0.3);
+    border-radius: 8px;
+    color: var(--sand-light);
+    padding: 4px 8px;
+    width: 100%;
+    max-width: 560px;
+  }
+  #goalName:focus{
+    border-color: var(--turquoise);
+    outline: none;
+    background: rgba(255,255,255,0.1);
+  }
+  .goal-amount-row{
+    display:flex; align-items:center; gap:8px; margin-top: 12px;
+    font-family:'JetBrains Mono', monospace;
+    color: rgba(243,231,209,0.75);
+    font-size: 14px;
+  }
+  #goalAmount{
+    background: rgba(255,255,255,0.05);
+    border: 1px dashed rgba(243,231,209,0.3);
+    border-radius: 6px;
+    color: var(--sand-light);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    width: 150px;
+    padding: 4px 8px;
+  }
+  #goalAmount:focus{ outline:none; border-color: var(--turquoise); background: rgba(255,255,255,0.1); }
+
+  .reset-btn{
+    background: rgba(243,231,209,0.1);
+    border: 1px solid rgba(243,231,209,0.35);
+    color: var(--sand-light);
+    font-family:'Work Sans', sans-serif;
+    font-size: 13px;
+    padding: 9px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s ease;
+  }
+  .reset-btn:hover{ background: rgba(243,231,209,0.2); }
+
+  .jar-row{
+    display:flex; align-items:center; gap: 28px; margin-top: 30px; flex-wrap: wrap;
+  }
+  .jar{
+    width: 96px; height: 128px;
+    border: 3px solid rgba(243,231,209,0.55);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(243,231,209,0.05);
+  }
+  .jar::before{
+    content:'';
+    position:absolute; top:-11px; left: 50%; transform: translateX(-50%);
+    width: 46px; height: 10px;
+    border: 3px solid rgba(243,231,209,0.55);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+  }
+  .jar-water{
+    position:absolute; bottom:0; left:0; right:0;
+    height: 0%;
+    background: linear-gradient(180deg, var(--turquoise), #1a9c90);
+    transition: height 0.6s cubic-bezier(.4,1.4,.6,1);
+  }
+
+  .progress-info{ flex:1; min-width: 220px; }
+  .pct{
+    font-family:'Fraunces', serif;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--sand-light);
+  }
+  .pct span{ font-size: 20px; opacity:.6; font-weight:500; }
+  .bar-track{
+    margin-top: 12px;
+    height: 10px;
+    border-radius: 100px;
+    background: rgba(243,231,209,0.15);
+    overflow:hidden;
+  }
+  .bar-fill{
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--turquoise), var(--gold));
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(.4,1.4,.6,1);
+  }
+  .stats-row{
+    display:flex; gap: 26px; margin-top: 14px; flex-wrap: wrap;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .stat small{ display:block; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color: rgba(243,231,209,0.55); margin-bottom:2px;}
+  .stat strong{ font-size: 17px; color: var(--sand-light); }
+  .stat.falta strong{ color: var(--coral); }
+  .stat.ahorrado strong{ color: var(--turquoise); }
+
+  .section-title{
+    font-family:'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 40px 0 16px;
+    display:flex; align-items:center; justify-content:space-between; gap: 12px;
+  }
+  .add-person-btn{
+    background: var(--ocean-deep);
+    color: var(--sand-light);
+    border: none;
+    font-family:'Work Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 100px;
+    cursor: pointer;
+    display:flex; align-items:center; gap:6px;
+    transition: background .15s ease;
+  }
+  .add-person-btn:hover{ background:#0a2b2d; }
+
+  .people-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .person-card{
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px;
+    border-top: 4px solid var(--turquoise);
+  }
+  .person-card:nth-child(2n){ border-top-color: var(--coral); }
+  .person-card:nth-child(3n){ border-top-color: var(--gold); }
+
+  .person-head{
+    display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom: 14px;
+  }
+  .person-name{
+    font-family:'Fraunces', serif;
+    font-weight: 600;
+    font-size: 19px;
+    border: 1px dashed rgba(13,43,44,0.2);
+    border-radius: 6px;
+    background:transparent;
+    width: 100%;
+    color: var(--ink);
+    padding: 4px 6px;
+  }
+  .person-name:focus{ border-color: var(--turquoise); outline:none; background: #fff8eb; }
+  .remove-person{
+    background:none; border:none; cursor:pointer;
+    color: #b6b0a2; font-size: 18px; line-height:1; padding:6px;
+  }
+  .remove-person:hover{ color: var(--coral); }
+
+  .denom-group-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing:.08em; text-transform:uppercase;
+    color:#9a9182; margin: 14px 0 8px;
+  }
+  .denom-row{
+    display:flex; align-items:center; gap: 8px; margin-bottom: 8px;
+  }
+  .denom-chip{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px; font-weight:600;
+    background: var(--sand);
+    color: var(--ocean-deep);
+    border-radius: 100px;
+    padding: 5px 10px;
+    min-width: 78px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .denom-row.bill .denom-chip{ background: rgba(212,160,76,0.22); color:#8a621f; }
+  .qty-input{
+    width: 62px;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    border: 1px solid #e4dcc9;
+    border-radius: 8px;
+    padding: 6px 4px;
+    background: #faf8f5;
+  }
+  .qty-input:focus{ outline:none; border-color: var(--turquoise); background: #fff; }
+  .step-btn{
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid #dcd3be;
+    background: var(--sand-light);
+    cursor:pointer;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--ocean-deep);
+    display:flex; align-items:center; justify-content:center;
+    user-select:none;
+    touch-action: manipulation;
+  }
+  .step-btn:hover{ background: var(--sand); }
+  .step-btn:active{ transform: scale(0.92); }
+  .denom-subtotal{
+    margin-left:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    color:#9a9182;
+    min-width: 78px;
+    text-align:right;
+  }
+  .person-total{
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f0e9d8;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .person-total strong{ font-size: 18px; color: var(--ocean-deep); }
+
+  .empty-state{
+    text-align:center; padding: 40px 20px; color:#9a9182;
+    font-family:'Work Sans',sans-serif; font-size:14px;
+    grid-column: 1 / -1;
+  }
+
+  .history{ margin-top: 44px; }
+  .history-item{
+    background:#fff; border-radius: 14px; padding: 14px 18px;
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:10px; box-shadow: 0 4px 14px rgba(13,59,62,0.08);
+    font-size: 14px;
+  }
+  .history-item .h-name{ font-family:'Fraunces', serif; font-weight:600; }
+  .history-item .h-meta{ font-family:'JetBrains Mono', monospace; font-size:12px; color:#9a9182; }
+
+  footer{
+    text-align:center; margin-top: 50px; font-size:12px; color:#b6b0a2;
+    font-family:'JetBrains Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-top">
+      <div style="flex:1; min-width:240px;">
+        <p class="eyebrow"><span class="status-dot" id="statusDot"></span><span id="statusText">Conectando…</span></p>
+        <input id="goalName" type="text" value="VIAJE PARA DECAMERON" maxlength="60">
+        <div class="goal-amount-row">
+          Meta: $ <input id="goalAmount" type="number" min="0" step="1000" value="5000000"> COP
+        </div>
+      </div>
+      <button class="reset-btn" id="resetBtn">↺ Reiniciar conteo</button>
+    </div>
+
+    <div class="jar-row">
+      <div class="jar"><div class="jar-water" id="jarWater"></div></div>
+      <div class="progress-info">
+        <div class="pct"><span id="pctNum">0</span><span>%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+        <div class="stats-row">
+          <div class="stat ahorrado">
+            <small>Ahorrado</small>
+            <strong id="totalAhorrado">$0</strong>
+          </div>
+          <div class="stat falta">
+            <small>Falta</small>
+            <strong id="totalFalta">$0</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    Aportes por persona
+    <button class="add-person-btn" id="addPersonBtn" type="button">+ Añadir persona</button>
+  </div>
+
+  <div class="people-grid" id="peopleGrid"></div>
+
+  <div class="history" id="historyWrap" style="display:none;">
+    <div class="section-title" style="margin-bottom:10px;">Metas anteriores</div>
+    <div id="historyList"></div>
+  </div>
+
+  <footer id="footerNote">Sincronizando en tiempo real con Firebase.</footer>
+</div>
+
+<template id="personCardTpl">
+  <div class="person-card">
+    <div class="person-head">
+      <input class="person-name" type="text" maxlength="30">
+      <button class="remove-person" title="Eliminar persona" type="button">✕</button>
+    </div>
+    <div class="denom-group-label">Monedas</div>
+    <div class="coins-wrap"></div>
+    <div class="denom-group-label">Billetes</div>
+    <div class="bills-wrap"></div>
+    <div class="person-total">
+      <span>Subtotal</span>
+      <strong class="subtotal-value">$0</strong>
+    </div>
+  </div>
+</template>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtMRKLifKb8t_WnIKah0ubhbX92yHW_9I",
+    authDomain: "ahorroviaje-f883a.firebaseapp.com",
+    databaseURL: "https://ahorroviaje-f883a-default-rtdb.firebaseio.com",
+    projectId: "ahorroviaje-f883a",
+    storageBucket: "ahorroviaje-f883a.firebasestorage.app",
+    messagingSenderId: "96659901309",
+    appId: "1:96659901309:web:cec772834c6f89db4a1a14"
+  };
+
+  const COINS = [100, 200, 500, 1000];
+  const BILLS = [10000, 20000, 50000];
+  const DB_PATH = 'ahorroViaje';
+
+  function fmt(n){ return '$' + Math.round(n || 0).toLocaleString('es-CO'); }
+  function cryptoId(){ return 'p_' + Math.random().toString(36).slice(2, 10); }
+
+  function defaultState(){
+    return {
+      goalName: 'VIAJE PARA DECAMERON',
+      goalAmount: 5000000,
+      people: [
+        { id: cryptoId(), name: 'Persona 1', counts: {} },
+        { id: cryptoId(), name: 'Persona 2', counts: {} }
+      ],
+      history: []
+    };
+  }
+
+  let state = defaultState();
+  let isUserActive = false;
+  let activeTimer = null;
+  let saveTimer = null;
+  let dbRef = null;
+
+  function markUserActive(){
+    isUserActive = true;
+    clearTimeout(activeTimer);
+    activeTimer = setTimeout(() => { isUserActive = false; }, 2000);
+  }
+
+  function syncToFirebase(){
+    markUserActive();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      if(dbRef) dbRef.set(state);
+    }, 600);
+  }
+
+  function setStatus(ok, text){
+    document.getElementById('statusDot').classList.toggle('ok', ok);
+    document.getElementById('statusText').textContent = text;
+  }
+
+  // Inicialización Firebase
+  firebase.initializeApp(firebaseConfig);
+  dbRef = firebase.database().ref(DB_PATH);
+  setStatus(false, 'Conectando…');
+
+  dbRef.on('value', snapshot => {
+    const val = snapshot.val();
+    if(val){
+      state = val;
+      state.people = state.people || [];
+      state.history = state.history || [];
+    } else {
+      state = defaultState();
+      dbRef.set(state);
+    }
+    setStatus(true, 'Sincronizado en vivo');
+    
+    // Solo redibujamos la cuadrícula si el usuario no está interactuando
+    if(!isUserActive) {
+      renderAll();
+    }
+  }, err => {
+    setStatus(false, 'Sin conexión');
+    console.error(err);
+  });
+
+  const goalNameEl = document.getElementById('goalName');
+  const goalAmountEl = document.getElementById('goalAmount');
+  const peopleGrid = document.getElementById('peopleGrid');
+  const personTpl = document.getElementById('personCardTpl');
+  const jarWater = document.getElementById('jarWater');
+  const barFill = document.getElementById('barFill');
+  const pctNum = document.getElementById('pctNum');
+  const totalAhorradoEl = document.getElementById('totalAhorrado');
+  const totalFaltaEl = document.getElementById('totalFalta');
+  const historyWrap = document.getElementById('historyWrap');
+  const historyList = document.getElementById('historyList');
+
+  function personSubtotal(person){
+    let sum = 0;
+    if(!person.counts) person.counts = {};
+    [...COINS, ...BILLS].forEach(d => { sum += (person.counts[d] || 0) * d; });
+    return sum;
+  }
+
+  function grandTotal(){
+    return (state.people || []).reduce((acc, p) => acc + personSubtotal(p), 0);
+  }
+
+  function renderPeople(){
+    peopleGrid.innerHTML = '';
+    if(!state.people || state.people.length === 0){
+      peopleGrid.innerHTML = '<div class="empty-state">Aún no hay nadie ahorrando. Haz clic en <strong>+ Añadir persona</strong> arriba para comenzar.</div>';
+      return;
+    }
+
+    state.people.forEach(person => {
+      const node = personTpl.content.cloneNode(true);
+      const card = node.querySelector('.person-card');
+      const nameInput = node.querySelector('.person-name');
+      const subtotalVal = node.querySelector('.subtotal-value');
+      nameInput.value = person.name || '';
+
+      nameInput.addEventListener('focus', markUserActive);
+      nameInput.addEventListener('input', (e) => {
+        person.name = e.target.value;
+        syncToFirebase();
+      });
+
+      node.querySelector('.remove-person').addEventListener('click', () => {
+        if(confirm(`¿Eliminar a "${person.name}" y todo su ahorro?`)){
+          state.people = state.people.filter(p => p.id !== person.id);
+          syncToFirebase();
+          renderAll();
+        }
+      });
+
+      const coinsWrap = node.querySelector('.coins-wrap');
+      const billsWrap = node.querySelector('.bills-wrap');
+
+      function buildRow(denom, isBill){
+        const row = document.createElement('div');
+        row.className = 'denom-row' + (isBill ? ' bill' : '');
+        
+        const chip = document.createElement('span');
+        chip.className = 'denom-chip';
+        chip.textContent = fmt(denom);
+
+        const minus = document.createElement('button');
+        minus.className = 'step-btn'; minus.type = 'button'; minus.textContent = '−';
+
+        const qty = document.createElement('input');
+        qty.type = 'number'; qty.min = '0'; qty.className = 'qty-input';
+        qty.value = (person.counts && person.counts[denom]) ? person.counts[denom] : 0;
+
+        const plus = document.createElement('button');
+        plus.className = 'step-btn'; plus.type = 'button'; plus.textContent = '+';
+
+        const subtotal = document.createElement('span');
+        subtotal.className = 'denom-subtotal';
+
+        function updateVal(newVal){
+          markUserActive();
+          let v = parseInt(newVal, 10);
+          if(isNaN(v) || v < 0) v = 0;
+          
+          qty.value = v;
+          if(!person.counts) person.counts = {};
+          person.counts[denom] = v;
+          
+          // Actualización instantánea sin redibujar toda la pantalla
+          subtotal.textContent = fmt(v * denom);
+          subtotalVal.textContent = fmt(personSubtotal(person));
+          renderTotalsOnly();
+          syncToFirebase();
+        }
+
+        // Seleccionar texto completo al enfocar para escribir números rápido (ej: 10)
+        qty.addEventListener('focus', (e) => {
+          markUserActive();
+          e.target.select();
+        });
+
+        minus.addEventListener('click', () => updateVal((parseInt(qty.value, 10) || 0) - 1));
+        plus.addEventListener('click', () => updateVal((parseInt(qty.value, 10) || 0) + 1));
+        qty.addEventListener('input', (e) => updateVal(e.target.value));
+
+        subtotal.textContent = fmt(((person.counts && person.counts[denom]) || 0) * denom);
+
+        row.appendChild(chip); 
+        row.appendChild(minus); 
+        row.appendChild(qty); 
+        row.appendChild(plus); 
+        row.appendChild(subtotal);
+        return row;
+      }
+
+      COINS.forEach(d => coinsWrap.appendChild(buildRow(d, false)));
+      BILLS.forEach(d => billsWrap.appendChild(buildRow(d, true)));
+
+      subtotalVal.textContent = fmt(personSubtotal(person));
+      peopleGrid.appendChild(node);
+    });
+  }
+
+  function renderTotalsOnly(){
+    const total = grandTotal();
+    const goal = parseFloat(state.goalAmount) || 0;
+    const pct = goal > 0 ? Math.min(100, (total / goal) * 100) : 0;
+    const falta = Math.max(0, goal - total);
+
+    totalAhorradoEl.textContent = fmt(total);
+    totalFaltaEl.textContent = goal > 0 ? fmt(falta) : '—';
+    pctNum.textContent = pct.toFixed(1);
+    barFill.style.width = pct + '%';
+    jarWater.style.height = pct + '%';
+  }
+
+  function renderHistory(){
+    if(!state.history || state.history.length === 0){
+      historyWrap.style.display = 'none';
+      return;
+    }
+    historyWrap.style.display = 'block';
+    historyList.innerHTML = '';
+    [...state.history].reverse().forEach(h => {
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      div.innerHTML = `
+        <div>
+          <div class="h-name">${h.goalName}</div>
+          <div class="h-meta">meta ${fmt(h.goalAmount)} · logrado ${fmt(h.total)} · ${h.date}</div>
+        </div>`;
+      historyList.appendChild(div);
+    });
+  }
+
+  function renderAll(){
+    goalNameEl.value = state.goalName || '';
+    goalAmountEl.value = state.goalAmount || 0;
+    renderPeople();
+    renderTotalsOnly();
+    renderHistory();
+  }
+
+  // Eventos globales
+  goalNameEl.addEventListener('focus', markUserActive);
+  goalNameEl.addEventListener('input', (e) => {
+    state.goalName = e.target.value;
+    syncToFirebase();
+  });
+
+  goalAmountEl.addEventListener('focus', (e) => {
+    markUserActive();
+    e.target.select();
+  });
+  goalAmountEl.addEventListener('input', (e) => {
+    state.goalAmount = parseFloat(e.target.value) || 0;
+    renderTotalsOnly();
+    syncToFirebase();
+  });
+
+  document.getElementById('addPersonBtn').addEventListener('click', () => {
+    markUserActive();
+    const name = prompt('Nombre de la persona:', 'Nueva Persona');
+    if(name === null) return;
+    if(!state.people) state.people = [];
+    state.people.push({ id: cryptoId(), name: name.trim() || 'Sin Nombre', counts: {} });
+    syncToFirebase();
+    renderAll();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    markUserActive();
+    const total = grandTotal();
+    if(!confirm('¿Guardar este avance en el historial y reiniciar el conteo a $0 para una nueva meta?')) return;
+    state.history = state.history || [];
+    state.history.push({
+      goalName: state.goalName,
+      goalAmount: state.goalAmount,
+      total: total,
+      date: new Date().toLocaleDateString('es-CO', { year:'numeric', month:'short', day:'numeric' })
+    });
+    if(state.people) {
+      state.people.forEach(p => { p.counts = {}; });
+    }
+    syncToFirebase();
+    renderAll();
+  });
+
+  renderAll();
+</script>
+</body>
+</html>
