@@ -58,30 +58,39 @@ const firebaseConfig = {
   }
 
   // Inicialización Firebase
-  firebase.initializeApp(firebaseConfig);
-  dbRef = firebase.database().ref(DB_PATH);
   setStatus(false, 'Conectando…');
-
-  dbRef.on('value', snapshot => {
-    const val = snapshot.val();
-    if(val){
-      state = val;
-      state.people = state.people || [];
-      state.history = state.history || [];
-    } else {
-      state = defaultState();
-      dbRef.set(state);
-    }
-    setStatus(true, 'Sincronizado en vivo');
-    
-    // Solo redibujamos la cuadrícula si el usuario no está interactuando
-    if(!isUserActive) {
-      renderAll();
-    }
-  }, err => {
+  if(typeof firebase === 'undefined'){
     setStatus(false, 'Sin conexión');
-    console.error(err);
-  });
+  } else {
+    try{
+      firebase.initializeApp(firebaseConfig);
+      dbRef = firebase.database().ref(DB_PATH);
+
+      dbRef.on('value', snapshot => {
+        const val = snapshot.val();
+        if(val){
+          state = val;
+          state.people = state.people || [];
+          state.history = state.history || [];
+        } else {
+          state = defaultState();
+          dbRef.set(state);
+        }
+        setStatus(true, 'Sincronizado en vivo');
+
+        // Solo redibujamos la cuadrícula si el usuario no está interactuando
+        if(!isUserActive) {
+          renderAll();
+        }
+      }, err => {
+        setStatus(false, 'Sin conexión');
+        console.error(err);
+      });
+    } catch(err){
+      setStatus(false, 'Sin conexión');
+      console.error(err);
+    }
+  }
 
   const goalNameEl = document.getElementById('goalName');
   const goalAmountEl = document.getElementById('goalAmount');
