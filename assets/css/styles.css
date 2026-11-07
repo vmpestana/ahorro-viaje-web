@@ -205,6 +205,7 @@
     gap: 20px;
   }
   .person-card{
+    min-width:0;
     background: #fff;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -241,7 +242,11 @@
     color:#9a9182; margin: 14px 0 8px;
   }
   .denom-row{
-    display:flex; align-items:center; gap: 8px; margin-bottom: 8px;
+    display:grid;
+    grid-template-columns: minmax(78px, 86px) 32px minmax(52px, 62px) 32px minmax(58px, 1fr);
+    align-items:center;
+    gap: 8px;
+    margin-bottom: 8px;
   }
   .denom-chip{
     font-family:'JetBrains Mono', monospace;
@@ -283,7 +288,6 @@
   .step-btn:hover{ background: var(--sand); }
   .step-btn:active{ transform: scale(0.92); }
   .denom-subtotal{
-    margin-left:auto;
     font-family:'JetBrains Mono', monospace;
     font-size: 13px;
     color:#9a9182;
@@ -321,4 +325,60 @@
   footer{
     text-align:center; margin-top: 50px; font-size:12px; color:#b6b0a2;
     font-family:'JetBrains Mono', monospace;
+  }
+
+  @media (max-width: 700px){
+    body{
+      padding: 16px 12px 48px;
+    }
+    .hero{
+      padding: 28px 20px 24px;
+      border-radius: 22px;
+    }
+    .hero-top{
+      align-items:center;
+    }
+    .reset-btn{
+      margin-left:auto;
+    }
+    .jar-row{
+      gap: 18px;
+    }
+    .people-grid{
+      grid-template-columns: 1fr;
+    }
+    .person-card{
+      padding: 18px 14px;
+    }
+    .denom-row{
+      grid-template-columns: 78px 32px minmax(52px, 62px) 32px minmax(58px, 1fr);
+      gap: 6px;
+    }
+    .section-title{
+      align-items:center;
+    }
+  }
+
+  @media (max-width: 380px){
+    .hero-content{
+      min-width:0;
+    }
+    .goal-amount-row{
+      flex-wrap:wrap;
+    }
+    #goalAmount{
+      width: 140px;
+    }
+    .denom-row{
+      grid-template-columns: 72px 32px 52px 32px minmax(54px, 1fr);
+      gap: 4px;
+    }
+    .denom-chip{
+      min-width:72px;
+      padding-left:6px;
+      padding-right:6px;
+    }
+    .denom-subtotal{
+      font-size:12px;
+    }
   }
