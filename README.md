@@ -6,6 +6,8 @@ Página web para seguir entre varias personas el ahorro para un viaje. Cada quie
 
 **Autor:** Victor Mendoza
 
+**Contribudora:** Luisa Triana
+
 ## Qué hace
 
 - Define el nombre de la meta y el monto a ahorrar.
@@ -17,7 +19,7 @@ Página web para seguir entre varias personas el ahorro para un viaje. Cada quie
 
 ## Tecnologías
 
-- HTML, CSS y JavaScript en un solo archivo (`ahorrolyv.html`)
+- HTML, CSS y JavaScript separados en sus respectivos archivos
 - Firebase Realtime Database para la sincronización
 - Netlify para el despliegue
 
