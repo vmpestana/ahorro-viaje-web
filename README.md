@@ -6,7 +6,7 @@ Página web para seguir entre varias personas el ahorro para un viaje. Cada quie
 
 **Autor:** Victor Mendoza
 
-**Contribudora:** Luisa Triana
+**Contribudora:** [Luisa Triana](https://luisatriana.dev/) · [GitHub](https://github.com/lutriana)
 
 ## Qué hace
 
