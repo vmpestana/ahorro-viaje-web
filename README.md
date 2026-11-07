@@ -19,9 +19,9 @@ Página web para seguir entre varias personas el ahorro para un viaje. Cada quie
 
 ## Tecnologías
 
-- HTML, CSS y JavaScript separados en sus respectivos archivos
-- Firebase Realtime Database para la sincronización
-- Netlify para el despliegue
+- HTML, CSS y JavaScript separados en sus respectivos archivos.
+- Firebase Realtime Database para la sincronización.
+- Netlify para el despliegue.
 
 ## Cómo usarlo localmente
 
